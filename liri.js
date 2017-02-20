@@ -9,6 +9,7 @@ var input = process.argv[2];
 var song = process.argv.slice(3).join(' ');
 var movie = process.argv.slice(3).join(' ');
 
+
 if (song.length === 0)
 	song = "The Sign";
 
@@ -16,22 +17,23 @@ if (movie.length === 0)
 	movie = "Mr. Nobody";
 
 if (input==="my-tweets"){
-	twitter();
+	twitter_func();
 }
-if (input==="spotify-this-song"){
-	spotify(song);
+else if (input==="spotify-this-song"){
+	spotify_func(song);
 }
-if (input==="movie-this"){
-	movie(movie);
+else if (input==="movie-this"){
+	movie_func(movie);
 }
-if (input==="do-what-it-says"){
-	doWhatItSays();
+else if (input==="do-what-it-says"){
+	doWhatItSays_func();
 }
 
 //Twitter
-function twitter(){
+function twitter_func(){
+
 	var twitterKeys = keys.twitterKeys;
-	var client = new Twitter({
+	var client = new twitter({
 		consumer_key: twitterKeys.consumer_key,
 		consumer_secret: twitterKeys.consumer_secret,
 		access_token_key: twitterKeys.access_token_key,
@@ -41,19 +43,22 @@ function twitter(){
 	var twitterID = "MrJonathanCruz";
 	var twitterURL = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=" + twitterID + "&count=20";
 	client.get(twitterURL, function(err, tweets, response){
-		if (!error){
+		if (!err){
 			console.log("Your last 20 tweets: ");
 			
 			for(let i = 0; i < tweets.length; i++){
 				console.log([i] + " Tweet: " + tweets[i].text + " " + tweets[i].created_at);
 			}
+		} else {
+			console.log(err);
 		}
 	})
 };
 
 //Spotify
-function spotify(song){
-	var spotify = require('spotify');
+function spotify_func (song){
+	console.log('spotify');
+
 	spotify.search({
 		type: 'track',
 		query: song
@@ -73,7 +78,7 @@ function spotify(song){
 }
 
 //OMDB
-function movie(movieTitle){
+function movie_func(movieTitle){
 	console.log(movieTitle);
 		request("http://www.omdbapi.com/?t=" + movieTitle + "&y=&plot=short&r=json&tomatoes=true", function(error, response, body) {
 		 console.log(movieTitle);
@@ -95,7 +100,7 @@ function movie(movieTitle){
 }
 
 //Do What It Says
-function doWhatItSays(){
+function doWhatItSays_func(){
 	fs.readFile("random.txt", "utf8", function(err, data){
 		var split = data.split(",");
 		console.log(split);
